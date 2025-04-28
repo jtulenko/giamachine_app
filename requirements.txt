@@ -1,0 +1,7 @@
+Flask
+pymysql
+Bokeh
+pandas
+numpy
+matplotlib
+xyzservices

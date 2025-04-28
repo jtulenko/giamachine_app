@@ -1,0 +1,62 @@
+<!doctype html>
+<!--
+ Copyright 2021 Google LLC
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<html>
+<head>
+  <title>ICE-D LAB He3 PXOL</title>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script type="text/javascript" src="https://cdn.bokeh.org/bokeh/release/bokeh-3.0.1.min.js"></script>
+    <script type="text/javascript">
+        Bokeh.set_log_level("info");
+    </script>
+</head>
+<body>
+
+  <h1>ICE-D Lab - Collections of Samples Prepared at Each Lab in the Database</h1>
+
+
+  <h2>He-3 in Pyroxene/Olivine Samples measured at {{ labname }}</h2>
+  <h3> Total sample count: {{ n|safe }}</h3>
+  <table width = 100%, border = "1">
+    <tr>
+      <p align="left"><a href="https://version2.ice-d.org/">ICE-D Main Page</a> | <a href= "/">ICE-D Examples</a> | <a href= "/lab">ICE-D Lab</a></p>
+    </tr>
+  </table>
+  <table width = 100%, border="1">
+  <tr>
+  <td width=300px>
+    <table>
+      <h2>Sample list</h2>
+      <p>{% for t in text %}
+        {{ t|safe }}<br>
+        {% endfor %}
+      </p>
+    </table>
+  </td>
+  <td width=400px, valign="top">
+  <h2>Helium-3 Data from {{ labname }}</h2>
+    <table width=400px>
+      <tr><td><hr></td></tr>
+      <tr><td><b>Measured concentrations versus percent uncertainty</b></td></tr>
+      <tr><td align=center><div> {{script | safe}} {{ div | safe }} </div></td></tr>
+    </table>
+  </td>
+  </tr>
+  </table>
+</body>
+</html>
