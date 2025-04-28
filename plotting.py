@@ -507,7 +507,7 @@ def GrIS_TDD(result):
     return [plot_script, plot_div]
 
 def create_at(result):
-    df1 = pandas.DataFrame(list(result))
+    df1 = pandas.DataFrame(result)
 
     date1 = df1[0]
     date1 = date1.astype('float64')
