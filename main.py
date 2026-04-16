@@ -1,22 +1,79 @@
 import datetime
-import pymysql
-
-#import common
 import plotting
-
-
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
 @app.route('/')
-def fun_examples():
+def home():
+    
+    return render_template('home.html')
 
-    r5 = [[2022, 3, 31],[2022, 3, 31],[2025, 3, 14],[2025, 3, 14]]
+@app.route('/sealevel', methods=["GET", "POST"])
+def sealevel():
+    script1,div1 = "",""
+    script2,div2 = "",""
+    if request.method == "POST":
+        action = request.form.get("action")
 
-    [plot_script5, plot_div5] = plotting.create_at(r5)
+        if action == "map_plot":
+            rsl_recon = str(request.form.get("rsl_recon"))
+            lat_min = int(request.form.get("lat_min", -90))
+            lat_max = int(request.form.get("lat_max", 90))
+            lon_min = int(request.form.get("lon_min", -180))
+            lon_max = int(request.form.get("lon_max", 180))
+            age_value = int(request.form.get("age_slider", 0))
+            rsl_max = int(request.form.get("rsl_max", 100))
+            rsl_min = int(request.form.get("rsl_min", -100))
 
-    return render_template('examples.html', script5=plot_script5, div5=plot_div5)
+            script1, div1 = plotting.sealevel_plot1(lat_min, lat_max, lon_min, lon_max, age_value, rsl_recon, rsl_min, rsl_max)
+
+        elif action == "ts_plot":
+            ts_recon = str(request.form.get("rsl_reconTS"))
+            lat_index = int(request.form.get("lat_ts", 63))
+            lon_index = int(request.form.get("lon_ts", 19))
+            age_min = int(request.form.get("age_min", 0))
+            age_max = int(request.form.get("age_max", 400))
+
+            script2, div2 = plotting.sealevel_ts(lat_index, lon_index, age_min, age_max, ts_recon)
+
+
+    return render_template('sealevel.html', script1=script1, div1=div1, script2=script2, div2=div2)
+
+@app.route('/deformation')
+def deformation():
+    
+    return render_template('deformation.html')
+
+@app.route('/velocity')
+def velocity():
+    
+    return render_template('velocity.html')
+
+@app.route('/gravity')
+def gravity():
+    
+    return render_template('gravity.html')
+
+@app.route('/stress')
+def stress():
+    
+    return render_template('stress.html')
+
+@app.route('/rotation')
+def rotation():
+    
+    return render_template('rotation.html')
+
+@app.route('/topography')
+def topography():
+    
+    return render_template('topography.html')
+
+@app.route('/feedback')
+def feedback():
+    
+    return render_template('feedback.html')
 
 if __name__ == '__main__':
     # This is used when running locally only. When deploying to Google App

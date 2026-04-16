@@ -5,3 +5,12 @@ pandas
 numpy
 matplotlib
 xyzservices
+xarray
+netCDF4
+gcsfs
+h5netcdf
+h5py
+zarr
+dask
+geopandas
+cmcrameri
