@@ -36,6 +36,9 @@ def get_rsl_input(rsl_input):
     elif rsl_input == "aust22LAM_PC":
         path = 'gs://giamachine_output_data/SL_austermann2022/austermann2022_LAM_PC_pcd.zarr'
         plot_title = 'Austermann et al. (2022) LAM PC'
+    elif rsl_input == 'creel24_a':
+        path = 'gs://giamachine_output_data/SL_creel24/SL_creel2024_400k_3k_rcp2p6_ch21exp07_gr21exp07_l90C.umVM5.lmVM5_UPDATED.zarr'
+        plot_title = 'Creel et al. (2024) a'
 
     ds = xr.open_zarr(path, consolidated=True, chunks={})
     
@@ -101,6 +104,8 @@ def sealevel_plot1(lat_min, lat_max, lon_min, lon_max, age_value, rsl_recon, rsl
         data_plot = map_bounds['RSL_VM5_1D'].values.transpose(1,0)
     elif '(2022)' in plot_title:
         data_plot = map_bounds['rsl'].values.transpose(1,0)
+    else:
+        data_plot = map_bounds['change_in_mean_sea_level_due_to_change_in_geoid_and_solid_earth_deformation'].values.transpose(1,0)
 
     if numpy.isnan(data_plot).all():
         raise ValueError("All values in data_plot are NaN.")
@@ -134,6 +139,8 @@ def sealevel_ts(lat, lon, age_min, age_max, rsl_recon):
         rsl_data = ds['RSL_VM5_1D'][:, lat, lon].values
     elif '(2022)' in plot_title:
         rsl_data = ds['rsl'][:, lat, lon].values
+    else:
+        rsl_data = ds['change_in_mean_sea_level_due_to_change_in_geoid_and_solid_earth_deformation'][:, lat, lon].values
     age_data = ds['age'].values
 
     p = figure(title=f"{plot_title}, at degrees {lat}, {lon}", width=855, height=540, x_axis_label="Age (ka)", y_axis_label="Relative Sea Level (m)", tools="pan,wheel_zoom,save,reset", x_range=(age_max, age_min))
