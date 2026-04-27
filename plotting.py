@@ -150,3 +150,57 @@ def sealevel_ts(lat, lon, age_min, age_max, rsl_recon):
     plot_script, plot_div = components(p)
 
     return components(p)
+
+def get_vdef_input(vdef_input):
+    vdef_input = vdef_input
+    if vdef_input == "drad_D1":
+        path = 'gs://giamachine_output_data/Deformation/drad_D1.zarr'
+        plot_title = 'Check with Holger'
+
+    ds = xr.open_zarr(path, consolidated=True, chunks={})
+
+    return ds, plot_title
+
+
+def vdef_plot1(lat_min, lat_max, lon_min, lon_max, vdef_recon, vdef_max, vdef_min):
+    vdef_input = vdef_recon
+    shoreline = get_shoreline()
+    ds, plot_title = get_vdef_input(vdef_input)
+    lat_array = ds['lat'].values
+    lon_array = ds['lon'].values
+
+    vdef_max = vdef_max
+    vdef_min = vdef_min
+    
+    if lat_min in lat_array and lat_max in lat_array and lon_min in lon_array and lon_max in lon_array:
+        map_bounds = ds.sel(
+            lat=slice(int(lat_min), int(lat_max)),
+            lon=slice(int(lon_min), int(lon_max))
+        )
+    else:
+        map_bounds = ds.sel(
+            lat=slice(int(lat_min), int(lat_max)),
+            lon=slice(int(lon_min), int(lon_max))
+        )
+        #raise ValueError(f"Time Slice not available for selected simulation, {age_value_closest} {lat_min_closest} {lat_max_closest} {lon_min_closest} {lon_max_closest} {lon_min_idx}, {lon_max_idx}")
+
+    data_plot = map_bounds['Drad'].values.transpose(1,0)
+
+    if numpy.isnan(data_plot).all():
+        raise ValueError("All values in data_plot are NaN.")
+    
+    cmap = cm.batlow
+    n_colors = 256
+    hex_colors = [mcolors.rgb2hex(cmap(i / (n_colors - 1))) for i in range(n_colors)]
+
+    #color_mapper = LinearColorMapper(palette=hex_colors, low=numpy.nanmin(data_plot), high=numpy.nanmax(data_plot))
+    color_mapper = LinearColorMapper(palette=hex_colors, low=vdef_min, high=vdef_max)
+
+    p = figure(title=f"{plot_title}", width=855, height=540, x_axis_label="Longitude", y_axis_label="Latitude", tools="pan,wheel_zoom,save,reset", x_range=(lon_min, lon_max), y_range=(lat_min, lat_max))
+    p.image(image=[data_plot], x=lon_min, y=lat_min, dw=lon_max - lon_min, dh=lat_max - lat_min, color_mapper=color_mapper)
+    p.patches('xs', 'ys', source=shoreline, fill_alpha=0, fill_color = 'black', line_color='black', line_width=1.75)
+    p.add_layout(ColorBar(color_mapper=color_mapper, title='Relative Sea Level (m)', title_text_baseline='middle', title_text_align='center', title_text_font_style='bold'), 'left')
+
+    plot_script, plot_div = components(p)
+
+    return components(p)

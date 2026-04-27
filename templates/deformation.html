@@ -46,14 +46,44 @@
   </table>
 
   <table width = 100%, border="1">
-    <td style="padding-left: 10px;">
-    <h2 align="left">Welcome - Page under construction. Stay Tuned.</h2>
+    <td>
+    <h3>Vertical Deformation reconstructions</h3>
+    <p> Choose from a select list of published vertical deformation solutions subset by Lat-Lon</p>
     </td>
-  <table width = 100%, border="0">
-    <td width=100% style="padding-left: 10px;">
-      <table width = 100% valign="middle">
-        <p align="left">GIAMachine is a computational engine (Machine) for visualizing, analyzing, and comparing model outputs from simulations of the gravitational, rotational, and deformational effects of ice and water loading on the solid Earth -- processes together referred to as glacial isostatic adjustment (GIA).</p>
-      </table>
+  </table>
+  <table width = 100%, border="1", height = 600px>
+    <td width=895px, valign="top", halign="left">
+        <table>
+          <tr><td align=center><div> {{script1 | safe}} {{ div1 | safe }} </div></td></tr>
+        </table>
+    </td>
+    <td width=295px, valign="top", halign="right">
+        <table width=300px>
+          <tr><td><b>Map plot variables</b></td></tr>
+          <tr><td align=center>
+          <br>
+          <br>
+          <form method="post">
+            <label for="vdef_recon">Recon:</label>
+            <select name="vdef_recon">
+              <option value="drad_D1">drad D1</option>
+            </select><br><br>
+            <label>Lat min: <input name="lat_min" type="text" value="-90" style="width: 60px"></label><br><br>
+            <label>Lat max: <input name="lat_max" type="text" value="90" style="width: 60px"></label><br><br>
+            <label>Lon min: <input name="lon_min" type="text" value="-180" style="width: 60px"></label><br><br>
+            <label>Lon max: <input name="lon_max" type="text" value="180" style="width: 60px"></label><br><br>
+            <label>VDef max (m): <input name="vdef_max" type="text" value="10" style="width: 60px"></label><br><br>
+            <label>VDef min (m): <input name="vdef_min" type="text" value="-10" style="width: 60px"></label><br><br>
+
+            <button type="submit" name="action" value="map_plot">Generate Plot</button>
+          </form>
+          <form method="get" action="/deformation" style="margin-top: 1em;">
+            <input type="submit" value="Reset">
+          </form>
+        
+          </td></tr>
+        </table>
+
     </td>
   </table>
 <br>

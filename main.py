@@ -40,10 +40,24 @@ def sealevel():
 
     return render_template('sealevel.html', script1=script1, div1=div1, script2=script2, div2=div2)
 
-@app.route('/deformation')
+@app.route('/deformation', methods=["GET", "POST"])
 def deformation():
-    
-    return render_template('deformation.html')
+    script1,div1 = "",""
+    if request.method == "POST":
+        action = request.form.get("action")
+
+        if action == "map_plot":
+            vdef_recon = str(request.form.get("vdef_recon"))
+            lat_min = int(request.form.get("lat_min", -90))
+            lat_max = int(request.form.get("lat_max", 90))
+            lon_min = int(request.form.get("lon_min", -180))
+            lon_max = int(request.form.get("lon_max", 180))
+            vdef_max = int(request.form.get("vdef_max", 10))
+            vdef_min = int(request.form.get("vdef_min", -10))
+
+            script1, div1 = plotting.vdef_plot1(lat_min, lat_max, lon_min, lon_max, vdef_recon, vdef_min, vdef_max)
+
+    return render_template('deformation.html', script1=script1, div1=div1)
 
 @app.route('/velocity')
 def velocity():
