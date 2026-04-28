@@ -151,21 +151,33 @@ def sealevel_ts(lat, lon, age_min, age_max, rsl_recon):
 
     return components(p)
 
-def get_vdef_input(vdef_input):
+def get_vvel_input(vdef_input):
     vdef_input = vdef_input
-    if vdef_input == "drad_D1":
-        path = 'gs://giamachine_output_data/Deformation/drad_D1.zarr'
-        plot_title = 'Check with Holger'
+    # if vdef_input == "drad_D1":
+    #     path = 'gs://giamachine_output_data/velocity/drad_D1.zarr'
+    #     plot_title = 'Check with Holger'
+    if vdef_input == "drad_ICE5Gv1.3VM2L90":
+        path = 'gs://giamachine_output_data/velocity/drad_ICE5Gv1.3VM2L90.zarr'
+        plot_title = 'ICE5G v1.3 VM2 L90 vertical velocity solution (mm/yr)'
+    if vdef_input == "drad_ICE6GCVM5a":
+        path = 'gs://giamachine_output_data/velocity/drad_ICE6GCVM5a.zarr'
+        plot_title = 'ICE6G CVM5a vertical velocity solution (mm/yr)'
+    if vdef_input == "drad_ICE6GDVM5a":
+        path = 'gs://giamachine_output_data/velocity/drad_ICE6GDVM5a.zarr'
+        plot_title = 'ICE6G DVM5a vertical velocity solution (mm/yr)'
+    if vdef_input == "drad_LM17.3":
+        path = 'gs://giamachine_output_data/velocity/drad_LM17.3.zarr'
+        plot_title = 'LM 17.3 vertical velocity solution (mm/yr)'
 
     ds = xr.open_zarr(path, consolidated=True, chunks={})
 
     return ds, plot_title
 
 
-def vdef_plot1(lat_min, lat_max, lon_min, lon_max, vdef_recon, vdef_max, vdef_min):
+def vvel_plot1(lat_min, lat_max, lon_min, lon_max, vdef_recon, vdef_max, vdef_min):
     vdef_input = vdef_recon
     shoreline = get_shoreline()
-    ds, plot_title = get_vdef_input(vdef_input)
+    ds, plot_title = get_vvel_input(vdef_input)
     lat_array = ds['lat'].values
     lon_array = ds['lon'].values
 
@@ -184,7 +196,8 @@ def vdef_plot1(lat_min, lat_max, lon_min, lon_max, vdef_recon, vdef_max, vdef_mi
         )
         #raise ValueError(f"Time Slice not available for selected simulation, {age_value_closest} {lat_min_closest} {lat_max_closest} {lon_min_closest} {lon_max_closest} {lon_min_idx}, {lon_max_idx}")
 
-    data_plot = map_bounds['Drad'].values.transpose(1,0)
+    #data_plot = map_bounds['Drad'].values.transpose(1,0)
+    data_plot = map_bounds['Drad'].values
 
     if numpy.isnan(data_plot).all():
         raise ValueError("All values in data_plot are NaN.")
@@ -199,7 +212,7 @@ def vdef_plot1(lat_min, lat_max, lon_min, lon_max, vdef_recon, vdef_max, vdef_mi
     p = figure(title=f"{plot_title}", width=855, height=540, x_axis_label="Longitude", y_axis_label="Latitude", tools="pan,wheel_zoom,save,reset", x_range=(lon_min, lon_max), y_range=(lat_min, lat_max))
     p.image(image=[data_plot], x=lon_min, y=lat_min, dw=lon_max - lon_min, dh=lat_max - lat_min, color_mapper=color_mapper)
     p.patches('xs', 'ys', source=shoreline, fill_alpha=0, fill_color = 'black', line_color='black', line_width=1.75)
-    p.add_layout(ColorBar(color_mapper=color_mapper, title='Relative Sea Level (m)', title_text_baseline='middle', title_text_align='center', title_text_font_style='bold'), 'left')
+    p.add_layout(ColorBar(color_mapper=color_mapper, title='Vertical velocity (mm/yr)', title_text_baseline='middle', title_text_align='center', title_text_font_style='bold'), 'left')
 
     plot_script, plot_div = components(p)
 
