@@ -124,6 +124,12 @@ def sealevel_plot1(lat_min, lat_max, lon_min, lon_max, age_value, rsl_recon, rsl
 
     plot_script, plot_div = components(p)
 
+    del p
+    del data_plot
+
+    import gc
+    gc.collect()
+
     return components(p)
 
 def sealevel_ts(lat, lon, age_min, age_max, rsl_recon):
