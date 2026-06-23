@@ -17,6 +17,7 @@ import dask
 import geopandas as gpd
 import json
 from cmcrameri import cm
+import gc
 
 def get_shoreline():
 
@@ -123,11 +124,9 @@ def sealevel_plot1(lat_min, lat_max, lon_min, lon_max, age_value, rsl_recon, rsl
     p.add_layout(ColorBar(color_mapper=color_mapper, title='Relative Sea Level (m)', title_text_baseline='middle', title_text_align='center', title_text_font_style='bold'), 'left')
 
     plot_script, plot_div = components(p)
-
-    #del p
+    
     del data_plot
-
-    import gc
+    del shoreline
     gc.collect()
 
     return components(p)
@@ -154,6 +153,10 @@ def sealevel_ts(lat, lon, age_min, age_max, rsl_recon):
     p.line(x=age_data, y=rsl_data, line_width=2, color='navy', alpha=1)
 
     plot_script, plot_div = components(p)
+
+    del rsl_data
+    del age_data
+    gc.collect()
 
     return components(p)
 
@@ -221,5 +224,9 @@ def vvel_plot1(lat_min, lat_max, lon_min, lon_max, vdef_recon, vdef_max, vdef_mi
     p.add_layout(ColorBar(color_mapper=color_mapper, title='Vertical velocity (mm/yr)', title_text_baseline='middle', title_text_align='center', title_text_font_style='bold'), 'left')
 
     plot_script, plot_div = components(p)
+
+    del data_plot
+    del shoreline
+    gc.collect()
 
     return components(p)
